@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: instabatch-backend
+    runtime: python
+    plan: free
+    rootDir: InstaBatch_Android/backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --workers 1 --threads 4 --timeout 120 wsgi:app
+    healthCheckPath: /healthz
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: APP_PASSWORD
+        sync: false
+      - key: MAX_WORKERS
+        value: "3"
+      - key: MAX_ACTIVE_JOBS
+        value: "8"
+      - key: MAX_CLIENT_JOBS
+        value: "2"
+      - key: RATE_LIMIT
+        value: "6"
+      - key: MAX_FILE_MB
+        value: "250"
+      - key: CLEANUP_HOURS
+        value: "24"
+      - key: DATA_DIR
+        value: /tmp/instabatch-data
+      - key: DATABASE_PATH
+        value: /tmp/instabatch.sqlite3
